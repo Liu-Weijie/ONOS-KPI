@@ -74,7 +74,7 @@ async def subscribe(
                     )
                 )
             )
-
+        logging.info(f"meas_info_list in KPM is : {meas_info_list}")
         sub_map[idx + 1] = cell.cell_global_id.value
         action_def = E2SmKpmActionDefinition(
             ric_style_type=RicStyleType(value=report_style.type),
@@ -98,6 +98,7 @@ async def subscribe(
                 action_def
             ),
         )
+        logging.info(f"Action in KPM is : {action}")
         actions.append(
             action
         )
@@ -110,6 +111,8 @@ async def subscribe(
     trigger_def.event_definition_formats.event_definition_format1=E2SmKpmEventTriggerDefinitionFormat1(
         reporting_period=app_config["report_period"]["interval"]
     )
+
+    logging.info(f"trigger_def in KPM is : {trigger_def}")
 
     async for (header, message) in e2_client.subscribe(
         e2_node_id=e2_node_id,
@@ -175,6 +178,7 @@ async def run(
 ) -> None:
     subscriptions = []
     for report_style in service_model.ran_functions[0].report_styles:
+        logging.info(f"report style in KPM is : '{report_style.measurements}'")
         subscriptions.append(
             subscribe(
                 app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style
