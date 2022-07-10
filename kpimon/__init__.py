@@ -44,6 +44,8 @@ from .metrics import CUSTOM_COLLECTOR
 
 KPM_SERVICE_MODEL_OID_V2 = "1.3.6.1.4.1.53148.1.2.2.2"
 
+logging.basicConfig(level=logging.DEBUG)
+
 
 async def subscribe(
     app_config: Dict[str, Any],
