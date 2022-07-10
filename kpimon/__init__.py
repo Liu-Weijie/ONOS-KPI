@@ -178,7 +178,7 @@ async def run(
 ) -> None:
     subscriptions = []
     for report_style in service_model.ran_functions[0].report_styles:
-        logging.INFO(f"report style in KPM is : '{report_style}'")
+        logging.INFO(f"report style in KPM is : '{report_style.measurements}'")
         subscriptions.append(
             subscribe(
                 app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style
