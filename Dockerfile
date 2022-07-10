@@ -12,7 +12,7 @@ COPY onos_e2_sm ./onos_e2_sm
 RUN pip install --upgrade pip ./onos_e2_sm --no-cache-dir
 
 # speed up subsequent image builds by pre-dl and pre-installing pre-reqs
-COPY fb-kpimon-xapp/setup.py ./kpimon/setup.py
+COPY setup.py ./kpimon/setup.py
 RUN pip install ./kpimon --no-cache-dir
 
 # install actual app code
