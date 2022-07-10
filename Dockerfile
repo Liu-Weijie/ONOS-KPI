@@ -8,11 +8,11 @@ FROM python:3.7-slim
 # install all deps
 WORKDIR /usr/local
 
-COPY onos_e2_sm ./onos_e2_sm
+COPY fb-kpimon-xapp/onos_e2_sm ./onos_e2_sm
 RUN pip install --upgrade pip ./onos_e2_sm --no-cache-dir
 
 # speed up subsequent image builds by pre-dl and pre-installing pre-reqs
-COPY setup.py ./kpimon/setup.py
+COPY fb-kpimon-xapp/setup.py ./kpimon/setup.py
 RUN pip install ./kpimon --no-cache-dir
 
 # install actual app code
