@@ -44,7 +44,7 @@ from .metrics import CUSTOM_COLLECTOR
 
 KPM_SERVICE_MODEL_OID_V2 = "1.3.6.1.4.1.53148.1.2.2.2"
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 
 async def subscribe(
@@ -129,12 +129,18 @@ async def subscribe(
 
         ind_header = E2SmKpmIndicationHeader()
         ind_header.parse(header)
+
+        logging.info(f"indication header : '{ind_header}'")
+
         ts = int.from_bytes(
             ind_header.indication_header_formats.indication_header_format1.collet_start_time.value, "big"
         )
 
         ind_message = E2SmKpmIndicationMessage()
         ind_message.parse(message)
+
+        logging.info(f"indication message : '{ind_message}'")
+
         subscript_id = ind_message.indication_message_formats.indication_message_format1.subscript_id.value
 
         meas_info_list = ind_message.indication_message_formats.indication_message_format1.meas_info_list.value
