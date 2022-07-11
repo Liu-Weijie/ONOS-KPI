@@ -14,16 +14,15 @@ the metrics via a prometheus gauge endpoint.
 
 You can deploy the `fb-kpimon-xapp` image using helm:
 ```
-helm repo add sdran https://sdrancharts.onosproject.org
-helm install -n micro-onos fb-kpimon-xapp sdran/fb-kpimon-xapp
+helm install -n riab fb-kpimon-xapp fb-kpimon-xapp
 ```
 
 uninstall:
 ```
-helm uninstall -n micro-onos fb-kpimon-xapp
+helm uninstall -n riab fb-kpimon-xapp
 ```
 
 view logs:
 ```
-kubectl logs --namespace=micro-onos --tail=100 -lname=fb-kpimon-xapp -f
+kubectl logs --namespace=riab --tail=100 -lname=fb-kpimon-xapp -c fb-kpimon-xapp -f
 ```
