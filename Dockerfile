@@ -21,4 +21,4 @@ RUN pip install ./kpimon --no-cache-dir
 
 ENTRYPOINT [ "python" ]
 
-# docker build --tag fb-kpimon-xapp:latest -f fb-kpimon-xapp/Dockerfile .
+# 
