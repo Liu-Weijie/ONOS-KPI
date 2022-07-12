@@ -160,6 +160,8 @@ async def subscribe(
                     logging.warning("Got a measurement with unset type")
                     continue
 
+                logging.info(f"metric_value : {metric_value} type_value : {type_value}")
+
                 metric_family = CUSTOM_COLLECTOR.metrics.get(type_value.value)
                 if metric_family is None:
                     logging.warning(f"No metric family found for '{type_value.value}'")
