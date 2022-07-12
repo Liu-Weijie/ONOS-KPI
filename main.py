@@ -22,6 +22,7 @@ async def async_main(
 ) -> None:
     async with e2_client, sdl_client:
         async for e2_node_id, e2_node in sdl_client.watch_e2_connections():
+            kpi : Dict[str,int] = {}
             try:
                 service_model = next(
                     sm
@@ -39,15 +40,17 @@ async def async_main(
                     e2_node_id,
                     e2_node,
                     service_model,
+                    kpi,
                 )
             )
 
-            # asyncio.create_task(
-            #     pci.run(
-            #         e2_client,
-            #         e2_node_id,
-            #     )
-            # )
+            asyncio.create_task(
+                pci.run(
+                    e2_client,
+                    e2_node_id,
+                    kpi,
+                )
+            )
 
 def main(args: argparse.Namespace) -> None:
     config = json.loads(pathlib.Path(args.ric_config).read_text())

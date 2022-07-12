@@ -54,6 +54,7 @@ async def subscribe(
     e2_node_id: str,
     e2_node: E2Node,
     report_style: KpmReportStyle,
+    kpi: Dict[str,int]
 ) -> None:
     # Save subscription ID -> cell global ID for Prometheus metric labeling
     sub_map = {}
@@ -162,6 +163,8 @@ async def subscribe(
 
                 logging.info(f"metric_value : {metric_value} type_value : {type_value}")
 
+                kpi[type_value.value] = metric_value
+
                 metric_family = CUSTOM_COLLECTOR.metrics.get(type_value.value)
                 if metric_family is None:
                     logging.warning(f"No metric family found for '{type_value.value}'")
@@ -185,13 +188,14 @@ async def run(
     e2_node_id: str,
     e2_node: E2Node,
     service_model: ServiceModelInfo,
+    kpi: Dict[str,int],
 ) -> None:
     subscriptions = []
     for report_style in service_model.ran_functions[0].report_styles:
         logging.info(f"report style in KPM is : '{report_style.measurements}'")
         subscriptions.append(
             subscribe(
-                app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style
+                app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style, kpi
             )
         )
 
