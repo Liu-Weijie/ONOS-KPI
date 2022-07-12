@@ -41,11 +41,12 @@ from onos_e2_sm.e2sm_rc_pre.v2 import (
 ServiceModelName = 'oran-e2sm-rc-pre'
 ServiceModelVersion = 'v2'
 # pci trigger type
-RcPreTriggerTypes = RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC
+RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTriggerType.RC_PRE_TRIGGER_TYPE_UPON_CHANGE]
 
 async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     subscriptions = [
-        subscribe(e2_client, e2_node_id, RcPreTriggerTypes, kpi, lock)
+        subscribe(e2_client, e2_node_id, RcPreTriggerType, kpi, lock)
+        for RcPreTriggerType in RcPreTriggerTypes
     ]
     await asyncio.gather(*subscriptions)
 
@@ -127,16 +128,22 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         )
         logging.info(f"control head : {ControlHeader}")
         # control message
+        parameter_type = []
+        parameter_val = []
+        parameter_type.append(
+            RanparameterDefItem(
+                ran_parameter_id=RanparameterId(value=1),
+                ran_parameter_name=RanparameterName(value="result"),
+                ran_parameter_type=RanparameterType.RANPARAMETER_TYPE_INTEGER,
+        ))
+        parameter_val.append(
+            RanparameterValue(
+                value_int=1
+        ))
         ControlMessage = E2SmRcPreControlMessage(
             control_message=E2SmRcPreControlMessageFormat1(
-                parameter_type=RanparameterDefItem(
-                    ran_parameter_id=RanparameterId(value=1),
-                    ran_parameter_name=RanparameterName(value="result"),
-                    ran_parameter_type=RanparameterType.RANPARAMETER_TYPE_INTEGER,
-                ),
-                parameter_val=RanparameterValue(
-                    value_int=1
-                )
+                parameter_type=parameter_type,
+                parameter_val=parameter_val,
             )
         )
         logging.info(f"control message : {ControlMessage}")
