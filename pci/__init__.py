@@ -118,9 +118,11 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         # send control request
         # control header
         ControlHeader = E2SmRcPreControlHeader(
-            cgi=header.indication_header_format1.cgi,
-            rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
-            ric_control_message_priority=RicControlMessagePriority(value=5)
+            control_header_format1=E2SmRcPreControlHeaderFormat1(
+                cgi=header.indication_header_format1.cgi,
+                rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
+                ric_control_message_priority=RicControlMessagePriority(value=5)
+            )
         )
         # control message
         ControlMessage = E2SmRcPreControlMessage(
