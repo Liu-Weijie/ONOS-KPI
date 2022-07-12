@@ -86,8 +86,9 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
             time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
         )
     )
+    logging.info(f"Action Report : {ActionReport}")
     # send subscription report
-    logging.info(f'sending subscription for {e2_node_id} and type is {trigger_type}')
+    logging.info(f'sending pci subscription for {e2_node_id}')
     async for header_bytes, message_bytes in e2_client.subscribe(
         e2_node_id=e2_node_id,
         service_model_name=ServiceModelName,
@@ -96,7 +97,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         trigger=bytes(create_event_trigger(trigger_type)),
         actions=[ActionReport]
     ):
-        logging.info(f'received indication for {e2_node_id} and type is {trigger_type}')
+        logging.info(f'received pci indication for {e2_node_id}')
         # get indication message
         header = E2SmRcPreIndicationHeader()
         message = E2SmRcPreIndicationMessage()
