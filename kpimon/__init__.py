@@ -161,7 +161,7 @@ async def subscribe(
                     logging.warning("Got a measurement with unset type")
                     continue
 
-                logging.info(f"metric_value : {metric_value} type_value : {type_value}")
+                logging.debug(f"metric_value : {metric_value} type_value : {type_value}")
 
                 kpi[type_value.value] = metric_value
 
@@ -171,7 +171,7 @@ async def subscribe(
                     continue
 
                 cellid = sub_map[subscript_id]
-                logging.info(
+                logging.debug(
                     f"{metric_family.name}{{nodeid={e2_node_id}, cellid={cellid}}} {metric_value} {ts}"
                 )
                 metric_family.add_metric(
