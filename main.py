@@ -7,6 +7,7 @@
 import argparse
 import asyncio
 import json
+from multiprocessing import Lock
 import pathlib
 from typing import Any, Dict
 
@@ -22,6 +23,8 @@ async def async_main(
 ) -> None:
     async with e2_client, sdl_client:
         async for e2_node_id, e2_node in sdl_client.watch_e2_connections():
+            # using lock to sync the kpi between kpimon coroutine and pci coroutine
+            lock = asyncio.Lock()
             kpi : Dict[str,int] = {}
             try:
                 service_model = next(
@@ -41,6 +44,7 @@ async def async_main(
                     e2_node,
                     service_model,
                     kpi,
+                    lock,
                 )
             )
 
@@ -49,6 +53,7 @@ async def async_main(
                     e2_client,
                     e2_node_id,
                     kpi,
+                    lock,
                 )
             )
 

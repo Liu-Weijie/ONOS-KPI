@@ -43,9 +43,9 @@ ServiceModelVersion = 'v2'
 # pci trigger type
 RcPreTriggerTypes = RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC
 
-async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int]):
+async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     subscriptions = [
-        subscribe(e2_client, e2_node_id, RcPreTriggerTypes, kpi)
+        subscribe(e2_client, e2_node_id, RcPreTriggerTypes, kpi, lock)
     ]
     await asyncio.gather(*subscriptions)
 
@@ -75,7 +75,7 @@ def handle_periodic_report(header: E2SmRcPreIndicationHeader, message: E2SmRcPre
     )
 
 
-async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTriggerType, kpi: Dict[str,int]):
+async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTriggerType, kpi: Dict[str,int], lock: asyncio.Lock):
     logging.info(f'subscription node id : {e2_node_id} type : {trigger_type}')
     # create action report
     ActionReport = Action(
@@ -114,7 +114,8 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         pci_data['trigger_type'] = trigger_type.name
 
         logging.info(f'pci_data : {pci_data}')
-        logging.info(f'kpi_data : {kpi}')
+        async with lock:
+            logging.info(f'kpi_data : {kpi}')
         # send control request
         # control header
         ControlHeader = E2SmRcPreControlHeader(
