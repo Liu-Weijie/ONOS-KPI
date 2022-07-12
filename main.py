@@ -44,7 +44,10 @@ async def async_main(
                     e2_node,
                     service_model,
                     kpi,
+<<<<<<< HEAD
                     lock,
+=======
+>>>>>>> a79c7b7 (add kpi data)
                 )
             )
 
@@ -53,7 +56,10 @@ async def async_main(
                     e2_client,
                     e2_node_id,
                     kpi,
+<<<<<<< HEAD
                     lock,
+=======
+>>>>>>> a79c7b7 (add kpi data)
                 )
             )
 

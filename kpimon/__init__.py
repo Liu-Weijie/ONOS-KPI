@@ -141,7 +141,7 @@ async def subscribe(
         ind_message = E2SmKpmIndicationMessage()
         ind_message.parse(message)
 
-        logging.info(f"indication message : '{ind_message}'")
+        logging.debug(f"indication message : '{ind_message}'")
 
         subscript_id = ind_message.indication_message_formats.indication_message_format1.subscript_id.value
 
@@ -166,6 +166,8 @@ async def subscribe(
 
                 async with lock:
                     kpi[type_value.value] = metric_value
+
+                kpi[type_value.value] = metric_value
 
                 metric_family = CUSTOM_COLLECTOR.metrics.get(type_value.value)
                 if metric_family is None:
