@@ -55,7 +55,7 @@ def create_event_trigger(trigger_type: RcPreTriggerType, period=1000) -> E2SmRcP
         trigger_type=trigger_type,
         reporting_period_ms=period,
     )
-    trigger.event_definition_formats.event_definition_format1 = format1
+    trigger.event_definition_format1 = format1
     return trigger
 
 def bytes_to_string(bs: AnyStr) -> AnyStr:
