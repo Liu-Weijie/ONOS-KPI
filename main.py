@@ -31,23 +31,23 @@ async def async_main(
             except StopIteration:
                 continue
 
-            # asyncio.create_task(
-            #     kpimon.run(
-            #         app_config,
-            #         e2_client,
-            #         sdl_client,
-            #         e2_node_id,
-            #         e2_node,
-            #         service_model,
-            #     )
-            # )
-
             asyncio.create_task(
-                pci.run(
+                kpimon.run(
+                    app_config,
                     e2_client,
+                    sdl_client,
                     e2_node_id,
+                    e2_node,
+                    service_model,
                 )
             )
+
+            # asyncio.create_task(
+            #     pci.run(
+            #         e2_client,
+            #         e2_node_id,
+            #     )
+            # )
 
 def main(args: argparse.Namespace) -> None:
     config = json.loads(pathlib.Path(args.ric_config).read_text())
