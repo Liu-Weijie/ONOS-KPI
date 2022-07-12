@@ -45,7 +45,7 @@ RcPreTriggerTypes = RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC
 
 async def run(e2_client: E2Client, e2_node_id: str):
     subscriptions = [
-        subscribe(e2_client, e2_node_id, RcPreTriggerType)
+        subscribe(e2_client, e2_node_id, RcPreTriggerTypes)
     ]
     await asyncio.gather(*subscriptions)
 
