@@ -11,6 +11,7 @@ import pathlib
 from typing import Any, Dict
 
 import kpimon
+import pci
 import onos_ric_sdk_py as sdk
 
 
@@ -41,6 +42,12 @@ async def async_main(
                 )
             )
 
+            asyncio.create_task(
+                pci.run(
+                    e2_client,
+                    e2_node_id,
+                )
+            )
 
 def main(args: argparse.Namespace) -> None:
     config = json.loads(pathlib.Path(args.ric_config).read_text())
