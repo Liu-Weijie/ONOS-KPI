@@ -93,7 +93,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         e2_node_id=e2_node_id,
         service_model_name=ServiceModelName,
         service_model_version=ServiceModelVersion,
-        subscription_id=f'onos-rc-pre-subscription-{e2_node_id}-{trigger_type}',
+        subscription_id=f'onos-pci-subscription-{e2_node_id}-{trigger_type}',
         trigger=bytes(create_event_trigger(trigger_type)),
         actions=[ActionReport]
     ):
