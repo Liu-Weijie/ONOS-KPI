@@ -54,6 +54,7 @@ async def subscribe(
     e2_node_id: str,
     e2_node: E2Node,
     report_style: KpmReportStyle,
+    kpi: Dict[str,int]
 ) -> None:
     # Save subscription ID -> cell global ID for Prometheus metric labeling
     sub_map = {}
@@ -76,7 +77,7 @@ async def subscribe(
                     )
                 )
             )
-        logging.info(f"meas_info_list in KPM is : {meas_info_list}")
+        logging.debug(f"meas_info_list in KPM is : {meas_info_list}")
         sub_map[idx + 1] = cell.cell_global_id.value
         action_def = E2SmKpmActionDefinition(
             ric_style_type=RicStyleType(value=report_style.type),
@@ -100,7 +101,7 @@ async def subscribe(
                 action_def
             ),
         )
-        logging.info(f"Action in KPM is : {action}")
+        logging.debug(f"Action in KPM is : {action}")
         actions.append(
             action
         )
@@ -114,7 +115,7 @@ async def subscribe(
         reporting_period=app_config["report_period"]["interval"]
     )
 
-    logging.info(f"trigger_def in KPM is : {trigger_def}")
+    logging.debug(f"trigger_def in KPM is : {trigger_def}")
 
     async for (header, message) in e2_client.subscribe(
         e2_node_id=e2_node_id,
@@ -130,7 +131,7 @@ async def subscribe(
         ind_header = E2SmKpmIndicationHeader()
         ind_header.parse(header)
 
-        logging.info(f"indication header : '{ind_header}'")
+        logging.debug(f"indication header : '{ind_header}'")
 
         ts = int.from_bytes(
             ind_header.indication_header_formats.indication_header_format1.collet_start_time.value, "big"
@@ -139,7 +140,7 @@ async def subscribe(
         ind_message = E2SmKpmIndicationMessage()
         ind_message.parse(message)
 
-        logging.info(f"indication message : '{ind_message}'")
+        logging.debug(f"indication message : '{ind_message}'")
 
         subscript_id = ind_message.indication_message_formats.indication_message_format1.subscript_id.value
 
@@ -161,6 +162,8 @@ async def subscribe(
                     continue
 
                 logging.info(f"metric_value : {metric_value} type_value : {type_value}")
+
+                kpi[type_value.value] = metric_value
 
                 metric_family = CUSTOM_COLLECTOR.metrics.get(type_value.value)
                 if metric_family is None:
@@ -185,13 +188,14 @@ async def run(
     e2_node_id: str,
     e2_node: E2Node,
     service_model: ServiceModelInfo,
+    kpi: Dict[str,int],
 ) -> None:
     subscriptions = []
     for report_style in service_model.ran_functions[0].report_styles:
-        logging.info(f"report style in KPM is : '{report_style.measurements}'")
+        logging.debug(f"report style in KPM is : '{report_style.measurements}'")
         subscriptions.append(
             subscribe(
-                app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style
+                app_config, e2_client, sdl_client, e2_node_id, e2_node, report_style, kpi
             )
         )
 
