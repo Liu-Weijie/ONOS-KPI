@@ -7,8 +7,15 @@ SPDX-License-Identifier: Apache-2.0
 # fb-kpimon-xapp
 key performance indicator app
 
-This app subscribes to the kpm (key performance metrics) service model and exposes
-the metrics via a prometheus gauge endpoint.
+This app subscribes to the kpm (key performance metrics) service model and send control request to e2 node
+
+
+## Make image
+
+You can build the image of `fb-kpimon-xapp` using make:
+```
+make image
+```
 
 ## Deploy container
 
