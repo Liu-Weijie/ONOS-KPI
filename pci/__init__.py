@@ -41,7 +41,7 @@ from onos_e2_sm.e2sm_rc_pre.v2 import (
 ServiceModelName = 'oran-e2sm-rc-pre'
 ServiceModelVersion = 'v2'
 # pci trigger type
-RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC]
+RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTriggerType.RC_PRE_TRIGGER_TYPE_UPON_CHANGE]
 
 async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     subscriptions = [
