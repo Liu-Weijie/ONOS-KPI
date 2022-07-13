@@ -329,8 +329,8 @@ class E2SmRcPreControlMessageFormat1(betterproto.Message):
     sequence from e2sm_rc_pre_v2.asn:217{E2SM-RC-PRE-ControlMessage-Format1}
     """
 
-    parameter_type: "RanparameterDefItem" = betterproto.message_field(1)
-    parameter_val: "RanparameterValue" = betterproto.message_field(2)
+    parameter_type: List["RanparameterDefItem"] = betterproto.message_field(1)
+    parameter_val: List["RanparameterValue"] = betterproto.message_field(2)
 
 
 @dataclass(eq=False, repr=False)
