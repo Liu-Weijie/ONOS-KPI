@@ -128,8 +128,8 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         )
         logging.info(f"control head : {ControlHeader}")
         # control message
-        parameter_type = List()
-        parameter_val = List()
+        parameter_type = []
+        parameter_val = []
         parameter_type.append(
             RanparameterDefItem(
                 ran_parameter_id=RanparameterId(value=1),
