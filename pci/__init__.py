@@ -132,8 +132,8 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
             control_message=E2SmRcPreControlMessageFormat1(
                 parameter_type=RanparameterDefItem(
                     ran_parameter_id=RanparameterId(value=1),
-                    ran_parameter_name=RanparameterType.RANPARAMETER_TYPE_INTEGER,
-                    ran_parameter_type=RanparameterName(value="Result")
+                    ran_parameter_name=RanparameterName(value="Result"),
+                    ran_parameter_type=RanparameterType.RANPARAMETER_TYPE_INTEGER,
                 ),
                 parameter_val=RanparameterValue(
                     value_int=1
