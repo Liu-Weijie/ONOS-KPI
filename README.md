@@ -4,10 +4,10 @@ SPDX-FileCopyrightText: 2019-present Open Networking Foundation <info@opennetwor
 
 SPDX-License-Identifier: Apache-2.0
 -->
-# fb-kpimon-xapp
+# Onf-xapp
 key performance indicator app
 
-This app subscribes to the kpm (key performance metrics) service model and send control request to e2 node
+This app subscribes to the kpm (key performance metrics) service model and send control request to the rc service model
 
 
 ## Make image
