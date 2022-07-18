@@ -232,147 +232,147 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
             logging.info(f'kpi_data : {kpi}')
         # send control request
         # control header
-        # ControlHeader = E2SmRcPreControlHeader(
-        #     control_header_format1=E2SmRcPreControlHeaderFormat1(
-        #         cgi=header.indication_header_format1.cgi,
-        #         rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
-        #         ric_control_message_priority=RicControlMessagePriority(value=5)
-        #     )
-        # )
-
-        ControlHeader = E2SmRcControlHeader(
-            ric_control_header_formats=RicControlHeaderFormats(
-                control_header_format1=E2SmRcControlHeaderFormat1(
-                    ue_id=Ueid(
-                        g_nb_ueid=UeidGnb(
-                            amf_ue_ngap_id=AmfUeNgapId(value=0),
-                            guami=Guami(
-                                p_lmnidentity=Plmnidentity(value=bytes([0,0,0])),
-                                a_mfregion_id=AmfregionId(value=BitString(
-                                    value=bytes([0]),
-                                    len=8
-                                )),
-                                a_mfset_id=AmfsetId(value=BitString(
-                                    value=bytes([0,0]),
-                                    len=10,
-                                )),
-                                a_mfpointer=Amfpointer(value=BitString(
-                                    value=bytes([0]),
-                                    len=6,    
-                                ))
-                            ),
-                            g_nb_cu_ue_f1_ap_id_list=UeidGnbCuF1ApIdList(
-                                value=[UeidGnbCuCpF1ApIdItem(
-                                    g_nb_cu_ue_f1_ap_id=GnbCuUeF1ApId(
-                                        value=0,
-                                    ),
-                                )],
-                            ),
-                            g_nb_cu_cp_ue_e1_ap_id_list=UeidGnbCuCpE1ApIdList(
-                                value=[UeidGnbCuCpE1ApIdItem(
-                                    g_nb_cu_cp_ue_e1_ap_id=GnbCuCpUeE1ApId(
-                                        value=0,
-                                    ),
-                                )],
-                            ),
-                            ran_ueid=Ranueid(value=bytes([0,0,0,0,0,0,0,0])),
-                            m_ng_ran_ue_xn_ap_id=NgRannodeUexnApid(value=0),
-                            global_gnb_id=GlobalGnbId(
-                                p_lmnidentity=Plmnidentity(
-                                    value=bytes([0,0,0]),
-                                ),
-                                g_nb_id=GnbId(
-                                    g_nb_id=BitString(
-                                        value=bytes([0,0,0,0]),
-                                        len=32,
-                                    )
-                                ),
-                            ),
-                            global_ng_rannode_id=GlobalNgrannodeId(
-                                g_nb=GlobalGnbId(
-                                    p_lmnidentity=Plmnidentity(
-                                        value=bytes([0,0,0]),
-                                    ),
-                                    g_nb_id=GnbId(
-                                        g_nb_id=BitString(
-                                            value=bytes([0,0,0,0]),
-                                            len=32,
-                                        )
-                                    ),
-                                ),
-                                ng_e_nb=GlobalNgEnbId(
-                                    p_lmnidentity=Plmnidentity(
-                                        value=bytes([0,0,0]),
-                                    ),
-                                    ng_enb_id=NgEnbId(
-                                        macro_ng_enb_id=BitString(
-                                            value=bytes([0,0,0,0]),
-                                            len=32,
-                                        )
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                    ric_style_type=RicStyleType(value=9),
-                    ric_control_action_id=RicControlActionId(value=1),
-                ),
-            ),
-        )
-
-        logging.info(f"control head : {ControlHeader}")
-        # control message
-        # ControlMessage = E2SmRcPreControlMessage(
-        #     control_message=E2SmRcPreControlMessageFormat1(
-        #         parameter_type=RanparameterDefItem(
-        #             ran_parameter_id=RanparameterId(value=1),
-        #             ran_parameter_name=RanparameterName(value="Result"),
-        #             ran_parameter_type=RanparameterType.RANPARAMETER_TYPE_INTEGER,
-        #         ),
-        #         parameter_val=RanparameterValue(
-        #             value_int=1
-        #         ),
-        #     )
-        # )
-
-        ranparamter_list : List = []
-
-        sequence_of_ran_parameters_1 : List = []
-
-        ran_paramter_structure_item = RanparameterStructureItem(
-            ran_parameter_id=RanparameterId(value=1),
-            ran_parameter_value_type=RanparameterValueType(
-                ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
-                    ran_parameter_value=RanparameterValue(
-                        value_int=100
-                    ),
-                ),
-            ),
-        ) 
-
-
-        sequence_of_ran_parameters_1.append(ran_paramter_structure_item)
-
-        ranparamter1 = E2SmRcControlMessageFormat1Item(
-            ran_parameter_id=RanparameterId(value=1),
-            ran_parameter_value_type=RanparameterValueType(
-                ran_p_choice_structure=RanparameterValueTypeChoiceStructure(
-                    ran_parameter_structure=RanparameterStructure(
-                        sequence_of_ran_parameters=sequence_of_ran_parameters_1,
-                    )
-                )
+        ControlHeader = E2SmRcPreControlHeader(
+            control_header_format1=E2SmRcPreControlHeaderFormat1(
+                cgi=header.indication_header_format1.cgi,
+                rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
+                ric_control_message_priority=RicControlMessagePriority(value=5)
             )
         )
 
-        ranparamter_list.append(ranparamter1)
+        # ControlHeader = E2SmRcControlHeader(
+        #     ric_control_header_formats=RicControlHeaderFormats(
+        #         control_header_format1=E2SmRcControlHeaderFormat1(
+        #             ue_id=Ueid(
+        #                 g_nb_ueid=UeidGnb(
+        #                     amf_ue_ngap_id=AmfUeNgapId(value=0),
+        #                     guami=Guami(
+        #                         p_lmnidentity=Plmnidentity(value=bytes([0,0,0])),
+        #                         a_mfregion_id=AmfregionId(value=BitString(
+        #                             value=bytes([0]),
+        #                             len=8
+        #                         )),
+        #                         a_mfset_id=AmfsetId(value=BitString(
+        #                             value=bytes([0,0]),
+        #                             len=10,
+        #                         )),
+        #                         a_mfpointer=Amfpointer(value=BitString(
+        #                             value=bytes([0]),
+        #                             len=6,    
+        #                         ))
+        #                     ),
+        #                     g_nb_cu_ue_f1_ap_id_list=UeidGnbCuF1ApIdList(
+        #                         value=[UeidGnbCuCpF1ApIdItem(
+        #                             g_nb_cu_ue_f1_ap_id=GnbCuUeF1ApId(
+        #                                 value=0,
+        #                             ),
+        #                         )],
+        #                     ),
+        #                     g_nb_cu_cp_ue_e1_ap_id_list=UeidGnbCuCpE1ApIdList(
+        #                         value=[UeidGnbCuCpE1ApIdItem(
+        #                             g_nb_cu_cp_ue_e1_ap_id=GnbCuCpUeE1ApId(
+        #                                 value=0,
+        #                             ),
+        #                         )],
+        #                     ),
+        #                     ran_ueid=Ranueid(value=bytes([0,0,0,0,0,0,0,0])),
+        #                     m_ng_ran_ue_xn_ap_id=NgRannodeUexnApid(value=0),
+        #                     global_gnb_id=GlobalGnbId(
+        #                         p_lmnidentity=Plmnidentity(
+        #                             value=bytes([0,0,0]),
+        #                         ),
+        #                         g_nb_id=GnbId(
+        #                             g_nb_id=BitString(
+        #                                 value=bytes([0,0,0,0]),
+        #                                 len=32,
+        #                             )
+        #                         ),
+        #                     ),
+        #                     global_ng_rannode_id=GlobalNgrannodeId(
+        #                         g_nb=GlobalGnbId(
+        #                             p_lmnidentity=Plmnidentity(
+        #                                 value=bytes([0,0,0]),
+        #                             ),
+        #                             g_nb_id=GnbId(
+        #                                 g_nb_id=BitString(
+        #                                     value=bytes([0,0,0,0]),
+        #                                     len=32,
+        #                                 )
+        #                             ),
+        #                         ),
+        #                         ng_e_nb=GlobalNgEnbId(
+        #                             p_lmnidentity=Plmnidentity(
+        #                                 value=bytes([0,0,0]),
+        #                             ),
+        #                             ng_enb_id=NgEnbId(
+        #                                 macro_ng_enb_id=BitString(
+        #                                     value=bytes([0,0,0,0]),
+        #                                     len=32,
+        #                                 )
+        #                             ),
+        #                         ),
+        #                     ),
+        #                 ),
+        #             ),
+        #             ric_style_type=RicStyleType(value=9),
+        #             ric_control_action_id=RicControlActionId(value=1),
+        #         ),
+        #     ),
+        # )
 
-        ControlMessage = E2SmRcControlMessage(
-            ric_control_message_formats=RicControlMessageFormats(
-                control_message_format1=E2SmRcControlMessageFormat1(
-                    ran_p_list=ranparamter_list,
+        logging.info(f"control head : {ControlHeader}")
+        # control message
+        ControlMessage = E2SmRcPreControlMessage(
+            control_message=E2SmRcPreControlMessageFormat1(
+                parameter_type=RanparameterDefItem(
+                    ran_parameter_id=RanparameterId(value=1),
+                    ran_parameter_name=RanparameterName(value="Result"),
+                    ran_parameter_type=RanparameterType.RANPARAMETER_TYPE_INTEGER,
                 ),
-            ),
+                parameter_val=RanparameterValue(
+                    value_int=1
+                ),
+            )
         )
+
+        # ranparamter_list : List = []
+
+        # sequence_of_ran_parameters_1 : List = []
+
+        # ran_paramter_structure_item = RanparameterStructureItem(
+        #     ran_parameter_id=RanparameterId(value=1),
+        #     ran_parameter_value_type=RanparameterValueType(
+        #         ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
+        #             ran_parameter_value=RanparameterValue(
+        #                 value_int=100
+        #             ),
+        #         ),
+        #     ),
+        # ) 
+
+
+        # sequence_of_ran_parameters_1.append(ran_paramter_structure_item)
+
+        # ranparamter1 = E2SmRcControlMessageFormat1Item(
+        #     ran_parameter_id=RanparameterId(value=1),
+        #     ran_parameter_value_type=RanparameterValueType(
+        #         ran_p_choice_structure=RanparameterValueTypeChoiceStructure(
+        #             ran_parameter_structure=RanparameterStructure(
+        #                 sequence_of_ran_parameters=sequence_of_ran_parameters_1,
+        #             )
+        #         )
+        #     )
+        # )
+
+        # ranparamter_list.append(ranparamter1)
+
+        # ControlMessage = E2SmRcControlMessage(
+        #     ric_control_message_formats=RicControlMessageFormats(
+        #         control_message_format1=E2SmRcControlMessageFormat1(
+        #             ran_p_list=ranparamter_list,
+        #         ),
+        #     ),
+        # )
         logging.info(f"control message : {ControlMessage}")
 
         logging.info(f'sending control request for {e2_node_id}')
