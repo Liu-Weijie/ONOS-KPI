@@ -82,6 +82,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     E2SmRcActionDefinitionFormat1,
     E2SmRcActionDefinitionFormat1Item,
     RanparameterId,
+    RicEventTriggerFormats,
     RicStyleType,
     Ueid,
     UeidGnb,
@@ -120,8 +121,12 @@ def create_event_trigger_definition():
 
     item_list : List = [e2_node_info_changed]
 
-    rc_event_trigger_definition = E2SmRcEventTriggerFormat3(
-        e2_node_info_change_list=item_list,
+    rc_event_trigger_definition = E2SmRcEventTrigger(
+        ric_event_trigger_formats=RicEventTriggerFormats(
+            event_trigger_format3=E2SmRcEventTriggerFormat3(
+                e2_node_info_change_list=item_list,
+            ),
+        ),
     )
 
     return rc_event_trigger_definition
