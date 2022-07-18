@@ -17,26 +17,26 @@ from onos_api.e2t.e2.v1beta1 import (
 )
 from onos_e2_sm.asn1.v1 import BitString
 
-from onos_e2_sm.e2sm_rc_pre.v2 import (
-    E2SmRcPreControlHeader,
-    E2SmRcPreControlHeaderFormat1,
-    E2SmRcPreControlMessage,
-    E2SmRcPreControlMessageFormat1,
-    E2SmRcPreEventTriggerDefinition,
-    E2SmRcPreEventTriggerDefinitionFormat1,
-    E2SmRcPreIndicationHeader,
-    E2SmRcPreIndicationMessage,
-    RcPreTriggerType,
-    Nrt,
-    RcPreCommand,
-    RicControlMessagePriority,
-    RanparameterDefItem,
-    RanparameterId,
-    RanparameterItem,
-    RanparameterName,
-    RanparameterType,
-    RanparameterValue,
-)
+# from onos_e2_sm.e2sm_rc_pre.v2 import (
+#     E2SmRcPreControlHeader,
+#     E2SmRcPreControlHeaderFormat1,
+#     E2SmRcPreControlMessage,
+#     E2SmRcPreControlMessageFormat1,
+#     E2SmRcPreEventTriggerDefinition,
+#     E2SmRcPreEventTriggerDefinitionFormat1,
+#     E2SmRcPreIndicationHeader,
+#     E2SmRcPreIndicationMessage,
+#     RcPreTriggerType,
+#     Nrt,
+#     RcPreCommand,
+#     RicControlMessagePriority,
+#     RanparameterDefItem,
+#     RanparameterId,
+#     RanparameterItem,
+#     RanparameterName,
+#     RanparameterType,
+#     RanparameterValue,
+# )
 
 from onos_e2_sm.e2sm_rc.v1 import (
     AmfUeNgapId,
@@ -65,6 +65,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     Plmnidentity,
     RanparameterStructure,
     RanparameterStructureItem,
+    RanparameterValue,
     RanparameterValueType,
     RanparameterValueTypeChoiceElementFalse,
     RanparameterValueTypeChoiceStructure,
@@ -72,6 +73,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     RicActionDefinitionFormats,
     RicControlActionId,
     RicControlHeaderFormats,
+    RicControlMessageFormats,
     RicEventTriggerConditionId,
     E2SmRcActionDefinition,
     E2SmRcActionDefinitionFormat1,
@@ -82,6 +84,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     E2SmRcActionDefinitionFormat1,
     E2SmRcActionDefinitionFormat1Item,
     RanparameterId,
+    RicEventTriggerFormats,
     RicStyleType,
     Ueid,
     UeidGnb,
@@ -103,25 +106,29 @@ async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: as
     ]
     await asyncio.gather(*subscriptions)
 
-def create_event_trigger(trigger_type: RcPreTriggerType, period=1000) -> E2SmRcPreEventTriggerDefinition:
-    trigger = E2SmRcPreEventTriggerDefinition()
-    format1 = E2SmRcPreEventTriggerDefinitionFormat1(
-        trigger_type=trigger_type,
-        reporting_period_ms=period,
-    )
-    trigger.event_definition_format1 = format1
-    return trigger
+# def create_event_trigger(trigger_type: RcPreTriggerType, period=1000) -> E2SmRcPreEventTriggerDefinition:
+#     trigger = E2SmRcPreEventTriggerDefinition()
+#     format1 = E2SmRcPreEventTriggerDefinitionFormat1(
+#         trigger_type=trigger_type,
+#         reporting_period_ms=period,
+#     )
+#     trigger.event_definition_format1 = format1
+#     return trigger
 
 def create_event_trigger_definition():
     e2_node_info_changed = E2SmRcEventTriggerFormat3Item(
         ric_event_trigger_condition_id=RicEventTriggerConditionId(value=1),
-        e2_node_info_change_id=2,
+        e2_node_info_change_id=1,
     )
 
     item_list : List = [e2_node_info_changed]
 
-    rc_event_trigger_definition = E2SmRcEventTriggerFormat3(
-        e2_node_info_change_list=item_list,
+    rc_event_trigger_definition = E2SmRcEventTrigger(
+        ric_event_trigger_formats=RicEventTriggerFormats(
+            event_trigger_format3=E2SmRcEventTriggerFormat3(
+                e2_node_info_change_list=item_list,
+            ),
+        ),
     )
 
     return rc_event_trigger_definition
@@ -148,25 +155,29 @@ def create_subscription_actions():
         id=3,
         type=ActionType.ACTION_TYPE_REPORT,
         payload=bytes(rc_action_definition),
+        subsequent_action=SubsequentAction(
+            type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
+            time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO,
+        ),
     )
 
     return action_report
 
-def bytes_to_string(bs: AnyStr) -> AnyStr:
-    return ''.join([f'{ch}' for ch in bs])
+# def bytes_to_string(bs: AnyStr) -> AnyStr:
+#     return ''.join([f'{ch}' for ch in bs])
 
-def handle_periodic_report(header: E2SmRcPreIndicationHeader, message: E2SmRcPreIndicationMessage) -> Dict:
-    serving_nci: bytes = header.indication_header_format1.cgi.nr_cgi.n_rcell_identity.value.value
-    meas_reports: List[Nrt] = message.indication_message_format1.neighbors
+# def handle_periodic_report(header: E2SmRcPreIndicationHeader, message: E2SmRcPreIndicationMessage) -> Dict:
+#     serving_nci: bytes = header.indication_header_format1.cgi.nr_cgi.n_rcell_identity.value.value
+#     meas_reports: List[Nrt] = message.indication_message_format1.neighbors
 
-    return dict(
-        ue_id=message.indication_message_format1.dl_arfcn.e_arfcn.value,
-        serving_nci=bytes_to_string(serving_nci),
-        neighbors={
-            bytes_to_string(meas_report.cgi.nr_cgi.n_rcell_identity.value.value): meas_report.pci.value
-            for meas_report in meas_reports
-        }
-    )
+#     return dict(
+#         ue_id=message.indication_message_format1.dl_arfcn.e_arfcn.value,
+#         serving_nci=bytes_to_string(serving_nci),
+#         neighbors={
+#             bytes_to_string(meas_report.cgi.nr_cgi.n_rcell_identity.value.value): meas_report.pci.value
+#             for meas_report in meas_reports
+#         }
+#     )
 
 
 async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
@@ -211,9 +222,9 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         message_format3 = message.ric_indication_message_formats.indication_message_format3
 
         logging.info(f"indication header : {header}")
-        logging.info(f"indication header format : {header_format1}")
+        # logging.info(f"indication header format : {header_format1}")
         logging.info(f"indication message : {message}")
-        logging.info(f"indication message format : {message_format3}")
+        # logging.info(f"indication message format : {message_format3}")
 
         # pci_data: Dict = dict()
         # pci_data = handle_periodic_report(header, message)
@@ -244,16 +255,16 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
                                 p_lmnidentity=Plmnidentity(value=bytes([0,0,0])),
                                 a_mfregion_id=AmfregionId(value=BitString(
                                     value=bytes([0]),
-                                    len=10
+                                    len=8
                                 )),
                                 a_mfset_id=AmfsetId(value=BitString(
                                     value=bytes([0,0]),
                                     len=10,
                                 )),
-                                a_mfpointer=Amfpointer(
+                                a_mfpointer=Amfpointer(value=BitString(
                                     value=bytes([0]),
-                                    len=6,
-                                )
+                                    len=6,    
+                                ))
                             ),
                             g_nb_cu_ue_f1_ap_id_list=UeidGnbCuF1ApIdList(
                                 value=[UeidGnbCuCpF1ApIdItem(
@@ -287,24 +298,24 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
                                     p_lmnidentity=Plmnidentity(
                                         value=bytes([0,0,0]),
                                     ),
-                                    ng_enb_id=GnbId(
+                                    g_nb_id=GnbId(
                                         g_nb_id=BitString(
                                             value=bytes([0,0,0,0]),
                                             len=32,
                                         )
                                     ),
                                 ),
-                                ng_e_nb=GlobalNgEnbId(
-                                    p_lmnidentity=Plmnidentity(
-                                        value=bytes([0,0,0]),
-                                    ),
-                                    ng_enb_id=NgEnbId(
-                                        macro_ng_enb_id=BitString(
-                                            value=bytes([0,0,0,0]),
-                                            len=32,
-                                        )
-                                    ),
-                                ),
+                                # ng_e_nb=GlobalNgEnbId(
+                                #     p_lmnidentity=Plmnidentity(
+                                #         value=bytes([0,0,0]),
+                                #     ),
+                                #     ng_enb_id=NgEnbId(
+                                #         macro_ng_enb_id=BitString(
+                                #             value=bytes([0,0,0,0]),
+                                #             len=32,
+                                #         )
+                                #     ),
+                                # ),
                             ),
                         ),
                     ),
@@ -334,11 +345,11 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         sequence_of_ran_parameters_1 : List = []
 
         ran_paramter_structure_item = RanparameterStructureItem(
-            ran_parameter_id=RanparameterId(value=1),
+            ran_parameter_id=RanparameterId(value=10),
             ran_parameter_value_type=RanparameterValueType(
                 ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
                     ran_parameter_value=RanparameterValue(
-                        value_int=1
+                        value_int=10
                     ),
                 ),
             ),
@@ -361,7 +372,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         ranparamter_list.append(ranparamter1)
 
         ControlMessage = E2SmRcControlMessage(
-            ric_control_message_formats=RicControlHeaderFormats(
+            ric_control_message_formats=RicControlMessageFormats(
                 control_message_format1=E2SmRcControlMessageFormat1(
                     ran_p_list=ranparamter_list,
                 ),
