@@ -200,26 +200,26 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
     ):
         logging.info(f'received pci indication for {e2_node_id}')
         # get indication message
-        # header = E2SmRcPreIndicationHeader()
-        # message = E2SmRcPreIndicationMessage()
-        # header.parse(header_bytes)
-        # message.parse(message_bytes)
+        header = E2SmRcPreIndicationHeader()
+        message = E2SmRcPreIndicationMessage()
+        header.parse(header_bytes)
+        message.parse(message_bytes)
 
         # logging.info(f"indication header : {header}")
         # logging.info(f"indication message : {message}")
 
-        header = E2SmRcIndicationHeader()
-        message = E2SmRcIndicationMessage()
-        header.parse(header_bytes)
-        message.parse(message_bytes)
+        # header = E2SmRcIndicationHeader()
+        # message = E2SmRcIndicationMessage()
+        # header.parse(header_bytes)
+        # message.parse(message_bytes)
 
-        header_format1 = header.ric_indication_header_formats.indication_header_format1
-        message_format3 = message.ric_indication_message_formats.indication_message_format3
+        # header_format1 = header.ric_indication_header_formats.indication_header_format1
+        # message_format3 = message.ric_indication_message_formats.indication_message_format3
 
-        logging.info(f"indication header : {header}")
-        logging.info(f"indication header format : {header_format1}")
-        logging.info(f"indication message : {message}")
-        logging.info(f"indication message format : {message_format3}")
+        # logging.info(f"indication header : {header}")
+        # logging.info(f"indication header format : {header_format1}")
+        # logging.info(f"indication message : {message}")
+        # logging.info(f"indication message format : {message_format3}")
 
         # pci_data: Dict = dict()
         # pci_data = handle_periodic_report(header, message)
