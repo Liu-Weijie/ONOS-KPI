@@ -94,8 +94,8 @@ from onos_e2_sm.e2sm_rc.v1 import (
 )
 
 # service model name and version
-ServiceModelName = 'oran-e2sm-rc'
-ServiceModelVersion = 'v1'
+ServiceModelName = 'oran-e2sm-rc-pre'
+ServiceModelVersion = 'v2'
 # pci trigger type
 RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTriggerType.RC_PRE_TRIGGER_TYPE_UPON_CHANGE]
 
