@@ -292,7 +292,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
                                     p_lmnidentity=Plmnidentity(
                                         value=bytes([0,0,0]),
                                     ),
-                                    ng_enb_id=GnbId(
+                                    g_nb_id=GnbId(
                                         g_nb_id=BitString(
                                             value=bytes([0,0,0,0]),
                                             len=32,
