@@ -72,6 +72,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     RicActionDefinitionFormats,
     RicControlActionId,
     RicControlHeaderFormats,
+    RicControlMessageFormats,
     RicEventTriggerConditionId,
     E2SmRcActionDefinition,
     E2SmRcActionDefinitionFormat1,
@@ -366,7 +367,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         ranparamter_list.append(ranparamter1)
 
         ControlMessage = E2SmRcControlMessage(
-            ric_control_message_formats=RicControlHeaderFormats(
+            ric_control_message_formats=RicControlMessageFormats(
                 control_message_format1=E2SmRcControlMessageFormat1(
                     ran_p_list=ranparamter_list,
                 ),
