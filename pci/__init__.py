@@ -97,11 +97,12 @@ from onos_e2_sm.e2sm_rc.v1 import (
 ServiceModelName = 'oran-e2sm-rc'
 ServiceModelVersion = 'v1'
 # pci trigger type
-# RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTriggerType.RC_PRE_TRIGGER_TYPE_UPON_CHANGE]
+RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTriggerType.RC_PRE_TRIGGER_TYPE_UPON_CHANGE]
 
 async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     subscriptions = [
-        subscribe(e2_client, e2_node_id, kpi, lock)
+        subscribe(e2_client, e2_node_id, rc_pre_trigger_type, kpi, lock)
+        for rc_pre_trigger_type in RcPreTriggerTypes
     ]
     await asyncio.gather(*subscriptions)
 
@@ -175,18 +176,18 @@ def handle_periodic_report(header: E2SmRcPreIndicationHeader, message: E2SmRcPre
     )
 
 
-async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
+async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTriggerType, kpi: Dict[str,int], lock: asyncio.Lock):
     logging.info(f'subscription node id : {e2_node_id}')
     # create action report
-    # ActionReport = Action(
-    #     id=0,
-    #     type=ActionType.ACTION_TYPE_REPORT,
-    #     subsequent_action=SubsequentAction(
-    #         type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
-    #         time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
-    #     )
-    # )
-    ActionReport = create_subscription_actions()
+    ActionReport = Action(
+        id=0,
+        type=ActionType.ACTION_TYPE_REPORT,
+        subsequent_action=SubsequentAction(
+            type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
+            time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
+        )
+    )
+    # ActionReport = create_subscription_actions()
     logging.info(f"Action Report : {ActionReport}")
     # send subscription report
     logging.info(f'sending pci subscription for {e2_node_id}')
@@ -195,7 +196,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         service_model_name=ServiceModelName,
         service_model_version=ServiceModelVersion,
         subscription_id=f'onos-pci-subscription-{e2_node_id}',
-        trigger=bytes(create_event_trigger_definition()),
+        trigger=bytes(create_event_trigger(trigger_type)),
         actions=[ActionReport]
     ):
         logging.info(f'received pci indication for {e2_node_id}')
