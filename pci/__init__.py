@@ -250,7 +250,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
                                 p_lmnidentity=Plmnidentity(value=bytes([0,0,0])),
                                 a_mfregion_id=AmfregionId(value=BitString(
                                     value=bytes([0]),
-                                    len=10
+                                    len=8
                                 )),
                                 a_mfset_id=AmfsetId(value=BitString(
                                     value=bytes([0,0]),
@@ -344,7 +344,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
             ran_parameter_value_type=RanparameterValueType(
                 ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
                     ran_parameter_value=RanparameterValue(
-                        value_int=1
+                        value_int=100
                     ),
                 ),
             ),
