@@ -255,10 +255,10 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
                                     value=bytes([0,0]),
                                     len=10,
                                 )),
-                                a_mfpointer=Amfpointer(
+                                a_mfpointer=Amfpointer(value=BitString(
                                     value=bytes([0]),
-                                    len=6,
-                                )
+                                    len=6,    
+                                ))
                             ),
                             g_nb_cu_ue_f1_ap_id_list=UeidGnbCuF1ApIdList(
                                 value=[UeidGnbCuCpF1ApIdItem(
