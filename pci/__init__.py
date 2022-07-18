@@ -15,6 +15,7 @@ from onos_api.e2t.e2.v1beta1 import (
     SubsequentActionType,
     TimeToWait
 )
+from onos_e2_sm.asn1.v1 import BitString
 
 from onos_e2_sm.e2sm_rc_pre.v2 import (
     E2SmRcPreControlHeader,
@@ -37,6 +38,61 @@ from onos_e2_sm.e2sm_rc_pre.v2 import (
     RanparameterValue,
 )
 
+from onos_e2_sm.e2sm_rc.v1 import (
+    AmfUeNgapId,
+    Amfpointer,
+    AmfregionId,
+    AmfsetId,
+    E2SmRcControlHeader,
+    E2SmRcControlHeaderFormat1,
+    E2SmRcControlMessage,
+    E2SmRcControlMessageFormat1,
+    E2SmRcControlMessageFormat1Item,
+    E2SmRcEventTrigger,
+    E2SmRcEventTriggerFormat1Item,
+    E2SmRcEventTriggerFormat1,
+    E2SmRcEventTriggerFormat3Item,
+    E2SmRcEventTriggerFormat3,
+    GlobalGnbId,
+    GlobalNgEnbId,
+    GlobalNgrannodeId,
+    GnbCuCpUeE1ApId,
+    GnbCuUeF1ApId,
+    GnbId,
+    Guami,
+    NgEnbId,
+    NgRannodeUexnApid,
+    Plmnidentity,
+    RanparameterStructure,
+    RanparameterStructureItem,
+    RanparameterValueType,
+    RanparameterValueTypeChoiceElementFalse,
+    RanparameterValueTypeChoiceStructure,
+    Ranueid,
+    RicActionDefinitionFormats,
+    RicControlActionId,
+    RicControlHeaderFormats,
+    RicControlMessageFormats,
+    RicEventTriggerConditionId,
+    E2SmRcActionDefinition,
+    E2SmRcActionDefinitionFormat1,
+    E2SmRcActionDefinitionFormat1Item,
+    E2SmRcIndicationHeader,
+    E2SmRcIndicationHeaderFormat1,
+    E2SmRcIndicationMessage,
+    E2SmRcActionDefinitionFormat1,
+    E2SmRcActionDefinitionFormat1Item,
+    RanparameterId,
+    RicEventTriggerFormats,
+    RicStyleType,
+    Ueid,
+    UeidGnb,
+    UeidGnbCuCpE1ApIdItem,
+    UeidGnbCuCpE1ApIdList,
+    UeidGnbCuCpF1ApIdItem,
+    UeidGnbCuF1ApIdList,
+)
+
 # service model name and version
 ServiceModelName = 'oran-e2sm-rc-pre'
 ServiceModelVersion = 'v2'
@@ -45,8 +101,8 @@ RcPreTriggerTypes = [RcPreTriggerType.RC_PRE_TRIGGER_TYPE_PERIODIC, RcPreTrigger
 
 async def run(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     subscriptions = [
-        subscribe(e2_client, e2_node_id, RcPreTriggerType, kpi, lock)
-        for RcPreTriggerType in RcPreTriggerTypes
+        subscribe(e2_client, e2_node_id, rc_pre_trigger_type, kpi, lock)
+        for rc_pre_trigger_type in RcPreTriggerTypes
     ]
     await asyncio.gather(*subscriptions)
 
@@ -58,6 +114,50 @@ def create_event_trigger(trigger_type: RcPreTriggerType, period=1000) -> E2SmRcP
     )
     trigger.event_definition_format1 = format1
     return trigger
+
+def create_event_trigger_definition():
+    e2_node_info_changed = E2SmRcEventTriggerFormat3Item(
+        ric_event_trigger_condition_id=RicEventTriggerConditionId(value=1),
+        e2_node_info_change_id=2,
+    )
+
+    item_list : List = [e2_node_info_changed]
+
+    rc_event_trigger_definition = E2SmRcEventTrigger(
+        ric_event_trigger_formats=RicEventTriggerFormats(
+            event_trigger_format3=E2SmRcEventTriggerFormat3(
+                e2_node_info_change_list=item_list,
+            ),
+        ),
+    )
+
+    return rc_event_trigger_definition
+
+def create_subscription_actions():
+    item_list : List = []
+
+    item = E2SmRcActionDefinitionFormat1Item(
+        ran_parameter_id=RanparameterId(value=21528),
+    )
+
+    item_list.append(item)
+
+    rc_action_definition = E2SmRcActionDefinition(
+        ric_style_type=RicStyleType(value=3),
+        ric_action_definition_formats=RicActionDefinitionFormats(
+            action_definition_format1=E2SmRcActionDefinitionFormat1(
+                ran_p_to_be_reported_list=item_list,
+            )
+        )
+    )
+
+    action_report = Action(
+        id=3,
+        type=ActionType.ACTION_TYPE_REPORT,
+        payload=bytes(rc_action_definition),
+    )
+
+    return action_report
 
 def bytes_to_string(bs: AnyStr) -> AnyStr:
     return ''.join([f'{ch}' for ch in bs])
@@ -77,7 +177,7 @@ def handle_periodic_report(header: E2SmRcPreIndicationHeader, message: E2SmRcPre
 
 
 async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTriggerType, kpi: Dict[str,int], lock: asyncio.Lock):
-    logging.info(f'subscription node id : {e2_node_id} type : {trigger_type}')
+    logging.info(f'subscription node id : {e2_node_id}')
     # create action report
     ActionReport = Action(
         id=0,
@@ -87,6 +187,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
             time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
         )
     )
+    # ActionReport = create_subscription_actions()
     logging.info(f"Action Report : {ActionReport}")
     # send subscription report
     logging.info(f'sending pci subscription for {e2_node_id}')
@@ -94,7 +195,7 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         e2_node_id=e2_node_id,
         service_model_name=ServiceModelName,
         service_model_version=ServiceModelVersion,
-        subscription_id=f'onos-pci-subscription-{e2_node_id}-{trigger_type}',
+        subscription_id=f'onos-pci-subscription-{e2_node_id}',
         trigger=bytes(create_event_trigger(trigger_type)),
         actions=[ActionReport]
     ):
@@ -105,16 +206,29 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
         header.parse(header_bytes)
         message.parse(message_bytes)
 
-        logging.info(f"indication header : {header}")
-        logging.info(f"indication message : {message}")
+        # logging.info(f"indication header : {header}")
+        # logging.info(f"indication message : {message}")
 
-        pci_data: Dict = dict()
-        pci_data = handle_periodic_report(header, message)
+        # header = E2SmRcIndicationHeader()
+        # message = E2SmRcIndicationMessage()
+        # header.parse(header_bytes)
+        # message.parse(message_bytes)
 
-        pci_data['e2_node_id'] = e2_node_id
-        pci_data['trigger_type'] = trigger_type.name
+        # header_format1 = header.ric_indication_header_formats.indication_header_format1
+        # message_format3 = message.ric_indication_message_formats.indication_message_format3
 
-        logging.info(f'pci_data : {pci_data}')
+        # logging.info(f"indication header : {header}")
+        # logging.info(f"indication header format : {header_format1}")
+        # logging.info(f"indication message : {message}")
+        # logging.info(f"indication message format : {message_format3}")
+
+        # pci_data: Dict = dict()
+        # pci_data = handle_periodic_report(header, message)
+
+        # pci_data['e2_node_id'] = e2_node_id
+        # pci_data['trigger_type'] = trigger_type.name
+
+        # logging.info(f'pci_data : {pci_data}')
         async with lock:
             logging.info(f'kpi_data : {kpi}')
         # send control request
@@ -126,6 +240,87 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
                 ric_control_message_priority=RicControlMessagePriority(value=5)
             )
         )
+
+        # ControlHeader = E2SmRcControlHeader(
+        #     ric_control_header_formats=RicControlHeaderFormats(
+        #         control_header_format1=E2SmRcControlHeaderFormat1(
+        #             ue_id=Ueid(
+        #                 g_nb_ueid=UeidGnb(
+        #                     amf_ue_ngap_id=AmfUeNgapId(value=0),
+        #                     guami=Guami(
+        #                         p_lmnidentity=Plmnidentity(value=bytes([0,0,0])),
+        #                         a_mfregion_id=AmfregionId(value=BitString(
+        #                             value=bytes([0]),
+        #                             len=8
+        #                         )),
+        #                         a_mfset_id=AmfsetId(value=BitString(
+        #                             value=bytes([0,0]),
+        #                             len=10,
+        #                         )),
+        #                         a_mfpointer=Amfpointer(value=BitString(
+        #                             value=bytes([0]),
+        #                             len=6,    
+        #                         ))
+        #                     ),
+        #                     g_nb_cu_ue_f1_ap_id_list=UeidGnbCuF1ApIdList(
+        #                         value=[UeidGnbCuCpF1ApIdItem(
+        #                             g_nb_cu_ue_f1_ap_id=GnbCuUeF1ApId(
+        #                                 value=0,
+        #                             ),
+        #                         )],
+        #                     ),
+        #                     g_nb_cu_cp_ue_e1_ap_id_list=UeidGnbCuCpE1ApIdList(
+        #                         value=[UeidGnbCuCpE1ApIdItem(
+        #                             g_nb_cu_cp_ue_e1_ap_id=GnbCuCpUeE1ApId(
+        #                                 value=0,
+        #                             ),
+        #                         )],
+        #                     ),
+        #                     ran_ueid=Ranueid(value=bytes([0,0,0,0,0,0,0,0])),
+        #                     m_ng_ran_ue_xn_ap_id=NgRannodeUexnApid(value=0),
+        #                     global_gnb_id=GlobalGnbId(
+        #                         p_lmnidentity=Plmnidentity(
+        #                             value=bytes([0,0,0]),
+        #                         ),
+        #                         g_nb_id=GnbId(
+        #                             g_nb_id=BitString(
+        #                                 value=bytes([0,0,0,0]),
+        #                                 len=32,
+        #                             )
+        #                         ),
+        #                     ),
+        #                     global_ng_rannode_id=GlobalNgrannodeId(
+        #                         g_nb=GlobalGnbId(
+        #                             p_lmnidentity=Plmnidentity(
+        #                                 value=bytes([0,0,0]),
+        #                             ),
+        #                             g_nb_id=GnbId(
+        #                                 g_nb_id=BitString(
+        #                                     value=bytes([0,0,0,0]),
+        #                                     len=32,
+        #                                 )
+        #                             ),
+        #                         ),
+        #                         ng_e_nb=GlobalNgEnbId(
+        #                             p_lmnidentity=Plmnidentity(
+        #                                 value=bytes([0,0,0]),
+        #                             ),
+        #                             ng_enb_id=NgEnbId(
+        #                                 macro_ng_enb_id=BitString(
+        #                                     value=bytes([0,0,0,0]),
+        #                                     len=32,
+        #                                 )
+        #                             ),
+        #                         ),
+        #                     ),
+        #                 ),
+        #             ),
+        #             ric_style_type=RicStyleType(value=9),
+        #             ric_control_action_id=RicControlActionId(value=1),
+        #         ),
+        #     ),
+        # )
+
         logging.info(f"control head : {ControlHeader}")
         # control message
         ControlMessage = E2SmRcPreControlMessage(
@@ -140,6 +335,45 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: RcPreTri
                 ),
             )
         )
+
+        # ranparamter_list : List = []
+
+        # sequence_of_ran_parameters_1 : List = []
+
+        # ran_paramter_structure_item = RanparameterStructureItem(
+        #     ran_parameter_id=RanparameterId(value=1),
+        #     ran_parameter_value_type=RanparameterValueType(
+        #         ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
+        #             ran_parameter_value=RanparameterValue(
+        #                 value_int=100
+        #             ),
+        #         ),
+        #     ),
+        # ) 
+
+
+        # sequence_of_ran_parameters_1.append(ran_paramter_structure_item)
+
+        # ranparamter1 = E2SmRcControlMessageFormat1Item(
+        #     ran_parameter_id=RanparameterId(value=1),
+        #     ran_parameter_value_type=RanparameterValueType(
+        #         ran_p_choice_structure=RanparameterValueTypeChoiceStructure(
+        #             ran_parameter_structure=RanparameterStructure(
+        #                 sequence_of_ran_parameters=sequence_of_ran_parameters_1,
+        #             )
+        #         )
+        #     )
+        # )
+
+        # ranparamter_list.append(ranparamter1)
+
+        # ControlMessage = E2SmRcControlMessage(
+        #     ric_control_message_formats=RicControlMessageFormats(
+        #         control_message_format1=E2SmRcControlMessageFormat1(
+        #             ran_p_list=ranparamter_list,
+        #         ),
+        #     ),
+        # )
         logging.info(f"control message : {ControlMessage}")
 
         logging.info(f'sending control request for {e2_node_id}')
