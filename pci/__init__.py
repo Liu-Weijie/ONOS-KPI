@@ -217,9 +217,9 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         message_format3 = message.ric_indication_message_formats.indication_message_format3
 
         logging.info(f"indication header : {header}")
-        logging.info(f"indication header format : {header_format1}")
+        # logging.info(f"indication header format : {header_format1}")
         logging.info(f"indication message : {message}")
-        logging.info(f"indication message format : {message_format3}")
+        # logging.info(f"indication message format : {message_format3}")
 
         # pci_data: Dict = dict()
         # pci_data = handle_periodic_report(header, message)
@@ -232,13 +232,13 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
             logging.info(f'kpi_data : {kpi}')
         # send control request
         # control header
-        ControlHeader = E2SmRcPreControlHeader(
-            control_header_format1=E2SmRcPreControlHeaderFormat1(
-                cgi=header.indication_header_format1.cgi,
-                rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
-                ric_control_message_priority=RicControlMessagePriority(value=5)
-            )
-        )
+        # ControlHeader = E2SmRcPreControlHeader(
+        #     control_header_format1=E2SmRcPreControlHeaderFormat1(
+        #         cgi=header.indication_header_format1.cgi,
+        #         rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
+        #         ric_control_message_priority=RicControlMessagePriority(value=5)
+        #     )
+        # )
 
         ControlHeader = E2SmRcControlHeader(
             ric_control_header_formats=RicControlHeaderFormats(
