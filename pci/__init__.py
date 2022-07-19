@@ -340,11 +340,11 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         sequence_of_ran_parameters_1 : List = []
 
         ran_paramter_structure_item = RanparameterStructureItem(
-            ran_parameter_id=RanparameterId(value=1),
+            ran_parameter_id=RanparameterId(value=10),
             ran_parameter_value_type=RanparameterValueType(
                 ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
                     ran_parameter_value=RanparameterValue(
-                        value_int=100
+                        value_int=10
                     ),
                 ),
             ),
