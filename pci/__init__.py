@@ -155,6 +155,10 @@ def create_subscription_actions():
         id=3,
         type=ActionType.ACTION_TYPE_REPORT,
         payload=bytes(rc_action_definition),
+        subsequent_action=SubsequentAction(
+            type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
+            time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO,
+        ),
     )
 
     return action_report
