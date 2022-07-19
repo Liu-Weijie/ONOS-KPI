@@ -17,26 +17,26 @@ from onos_api.e2t.e2.v1beta1 import (
 )
 from onos_e2_sm.asn1.v1 import BitString
 
-from onos_e2_sm.e2sm_rc_pre.v2 import (
-    E2SmRcPreControlHeader,
-    E2SmRcPreControlHeaderFormat1,
-    E2SmRcPreControlMessage,
-    E2SmRcPreControlMessageFormat1,
-    E2SmRcPreEventTriggerDefinition,
-    E2SmRcPreEventTriggerDefinitionFormat1,
-    E2SmRcPreIndicationHeader,
-    E2SmRcPreIndicationMessage,
-    RcPreTriggerType,
-    Nrt,
-    RcPreCommand,
-    RicControlMessagePriority,
-    RanparameterDefItem,
-    RanparameterId,
-    RanparameterItem,
-    RanparameterName,
-    RanparameterType,
-    RanparameterValue,
-)
+# from onos_e2_sm.e2sm_rc_pre.v2 import (
+#     E2SmRcPreControlHeader,
+#     E2SmRcPreControlHeaderFormat1,
+#     E2SmRcPreControlMessage,
+#     E2SmRcPreControlMessageFormat1,
+#     E2SmRcPreEventTriggerDefinition,
+#     E2SmRcPreEventTriggerDefinitionFormat1,
+#     E2SmRcPreIndicationHeader,
+#     E2SmRcPreIndicationMessage,
+#     RcPreTriggerType,
+#     Nrt,
+#     RcPreCommand,
+#     RicControlMessagePriority,
+#     RanparameterDefItem,
+#     RanparameterId,
+#     RanparameterItem,
+#     RanparameterName,
+#     RanparameterType,
+#     RanparameterValue,
+# )
 
 from onos_e2_sm.e2sm_rc.v1 import (
     AmfUeNgapId,
@@ -65,6 +65,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     Plmnidentity,
     RanparameterStructure,
     RanparameterStructureItem,
+    RanparameterValue,
     RanparameterValueType,
     RanparameterValueTypeChoiceElementFalse,
     RanparameterValueTypeChoiceStructure,
