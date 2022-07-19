@@ -141,7 +141,7 @@ async def subscribe(
         ind_message = E2SmKpmIndicationMessage()
         ind_message.parse(message)
 
-        logging.debug(f"indication message : '{ind_message}'")
+        logging.info(f"indication message : '{ind_message}'")
 
         subscript_id = ind_message.indication_message_formats.indication_message_format1.subscript_id.value
 
