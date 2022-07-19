@@ -377,15 +377,15 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
 
         logging.info(f'sending control request for {e2_node_id}')
         
-        # try:
-        #     await e2_client.control(
-        #         e2_node_id=e2_node_id,
-        #         service_model_name=ServiceModelName,
-        #         service_model_version=ServiceModelVersion,
-        #         header=bytes(ControlHeader),
-        #         message=bytes(ControlMessage)
-        #     )
-        # except Exception as e:
-        #     logging.error(f'control failure: {e.args}')
-        # else:      
-        #     logging.info(f"control success")
+        try:
+            await e2_client.control(
+                e2_node_id=e2_node_id,
+                service_model_name=ServiceModelName,
+                service_model_version=ServiceModelVersion,
+                header=bytes(ControlHeader),
+                message=bytes(ControlMessage)
+            )
+        except Exception as e:
+            logging.error(f'control failure: {e.args}')
+        else:      
+            logging.info(f"control success")
