@@ -17,26 +17,26 @@ from onos_api.e2t.e2.v1beta1 import (
 )
 from onos_e2_sm.asn1.v1 import BitString
 
-from onos_e2_sm.e2sm_rc_pre.v2 import (
-    E2SmRcPreControlHeader,
-    E2SmRcPreControlHeaderFormat1,
-    E2SmRcPreControlMessage,
-    E2SmRcPreControlMessageFormat1,
-    E2SmRcPreEventTriggerDefinition,
-    E2SmRcPreEventTriggerDefinitionFormat1,
-    E2SmRcPreIndicationHeader,
-    E2SmRcPreIndicationMessage,
-    RcPreTriggerType,
-    Nrt,
-    RcPreCommand,
-    RicControlMessagePriority,
-    RanparameterDefItem,
-    RanparameterId,
-    RanparameterItem,
-    RanparameterName,
-    RanparameterType,
-    RanparameterValue,
-)
+# from onos_e2_sm.e2sm_rc_pre.v2 import (
+#     E2SmRcPreControlHeader,
+#     E2SmRcPreControlHeaderFormat1,
+#     E2SmRcPreControlMessage,
+#     E2SmRcPreControlMessageFormat1,
+#     E2SmRcPreEventTriggerDefinition,
+#     E2SmRcPreEventTriggerDefinitionFormat1,
+#     E2SmRcPreIndicationHeader,
+#     E2SmRcPreIndicationMessage,
+#     RcPreTriggerType,
+#     Nrt,
+#     RcPreCommand,
+#     RicControlMessagePriority,
+#     RanparameterDefItem,
+#     RanparameterId,
+#     RanparameterItem,
+#     RanparameterName,
+#     RanparameterType,
+#     RanparameterValue,
+# )
 
 from onos_e2_sm.e2sm_rc.v1 import (
     AmfUeNgapId,
@@ -65,6 +65,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     Plmnidentity,
     RanparameterStructure,
     RanparameterStructureItem,
+    RanparameterValue,
     RanparameterValueType,
     RanparameterValueTypeChoiceElementFalse,
     RanparameterValueTypeChoiceStructure,
@@ -232,13 +233,13 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
             logging.info(f'kpi_data : {kpi}')
         # send control request
         # control header
-        ControlHeader = E2SmRcPreControlHeader(
-            control_header_format1=E2SmRcPreControlHeaderFormat1(
-                cgi=header.indication_header_format1.cgi,
-                rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
-                ric_control_message_priority=RicControlMessagePriority(value=5)
-            )
-        )
+        # ControlHeader = E2SmRcPreControlHeader(
+        #     control_header_format1=E2SmRcPreControlHeaderFormat1(
+        #         cgi=header.indication_header_format1.cgi,
+        #         rc_command=RcPreCommand.RC_PRE_COMMAND_SET_PARAMETERS,
+        #         ric_control_message_priority=RicControlMessagePriority(value=5)
+        #     )
+        # )
 
         ControlHeader = E2SmRcControlHeader(
             ric_control_header_formats=RicControlHeaderFormats(
@@ -377,15 +378,15 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
 
         logging.info(f'sending control request for {e2_node_id}')
         
-        # try:
-        #     await e2_client.control(
-        #         e2_node_id=e2_node_id,
-        #         service_model_name=ServiceModelName,
-        #         service_model_version=ServiceModelVersion,
-        #         header=bytes(ControlHeader),
-        #         message=bytes(ControlMessage)
-        #     )
-        # except Exception as e:
-        #     logging.error(f'control failure: {e.args}')
-        # else:      
-        #     logging.info(f"control success")
+        try:
+            await e2_client.control(
+                e2_node_id=e2_node_id,
+                service_model_name=ServiceModelName,
+                service_model_version=ServiceModelVersion,
+                header=bytes(ControlHeader),
+                message=bytes(ControlMessage)
+            )
+        except Exception as e:
+            logging.error(f'control failure: {e.args}')
+        else:      
+            logging.info(f"control success")
