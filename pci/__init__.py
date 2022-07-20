@@ -155,6 +155,10 @@ def create_subscription_actions():
         id=3,
         type=ActionType.ACTION_TYPE_REPORT,
         payload=bytes(rc_action_definition),
+        subsequent_action=SubsequentAction(
+            type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
+            time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO,
+        ),
     )
 
     return action_report
@@ -179,15 +183,15 @@ def create_subscription_actions():
 async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lock: asyncio.Lock):
     logging.info(f'subscription node id : {e2_node_id}')
     # create action report
-    ActionReport = Action(
-        id=0,
-        type=ActionType.ACTION_TYPE_REPORT,
-        subsequent_action=SubsequentAction(
-            type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
-            time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
-        )
-    )
-    # ActionReport = create_subscription_actions()
+    # ActionReport = Action(
+    #     id=0,
+    #     type=ActionType.ACTION_TYPE_REPORT,
+    #     subsequent_action=SubsequentAction(
+    #         type=SubsequentActionType.SUBSEQUENT_ACTION_TYPE_CONTINUE,
+    #         time_to_wait=TimeToWait.TIME_TO_WAIT_ZERO
+    #     )
+    # )
+    ActionReport = create_subscription_actions()
     logging.info(f"Action Report : {ActionReport}")
     # send subscription report
     logging.info(f'sending pci subscription for {e2_node_id}')
@@ -218,9 +222,9 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         message_format3 = message.ric_indication_message_formats.indication_message_format3
 
         logging.info(f"indication header : {header}")
-        logging.info(f"indication header format : {header_format1}")
+        # logging.info(f"indication header format : {header_format1}")
         logging.info(f"indication message : {message}")
-        logging.info(f"indication message format : {message_format3}")
+        # logging.info(f"indication message format : {message_format3}")
 
         # pci_data: Dict = dict()
         # pci_data = handle_periodic_report(header, message)
@@ -341,11 +345,11 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, kpi: Dict[str,int], lo
         sequence_of_ran_parameters_1 : List = []
 
         ran_paramter_structure_item = RanparameterStructureItem(
-            ran_parameter_id=RanparameterId(value=1),
+            ran_parameter_id=RanparameterId(value=10),
             ran_parameter_value_type=RanparameterValueType(
                 ran_p_choice_element_false=RanparameterValueTypeChoiceElementFalse(
                     ran_parameter_value=RanparameterValue(
-                        value_int=100
+                        value_int=10
                     ),
                 ),
             ),

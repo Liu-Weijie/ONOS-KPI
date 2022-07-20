@@ -167,6 +167,8 @@ async def subscribe(
                 async with lock:
                     kpi[type_value.value] = metric_value
 
+                kpi[type_value.value] = metric_value
+
                 metric_family = CUSTOM_COLLECTOR.metrics.get(type_value.value)
                 if metric_family is None:
                     logging.warning(f"No metric family found for '{type_value.value}'")
