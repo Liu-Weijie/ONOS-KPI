@@ -121,6 +121,7 @@ from onos_e2_sm.e2sm_rc.v1 import (
     Plmnidentity,
     RanparameterStructure,
     RanparameterStructureItem,
+    RanparameterValue,
     RanparameterValueType,
     RanparameterValueTypeChoiceElementFalse,
     RanparameterValueTypeChoiceStructure,
